@@ -1,5 +1,6 @@
 import { createInterface } from "node:readline";
 import { getCommands } from "./command_registry.js";
+import { CLICommand, type State } from "./state.js"
 
 export function cleanInput(input: string): string[] {
     
@@ -15,25 +16,22 @@ export function cleanInput(input: string): string[] {
     return cleanText;
 }
 
-export function startREPL() {
-const rl = createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  prompt: "Pokedex > "
-});
-rl.prompt();
-rl.on("line", (callback) => {
+export function startREPL(state: State) {
+    const rl = state["rl"]
+    rl.prompt();
+
+    rl.on("line", (callback) => {
    const response = cleanInput(callback);
+
    if (response.length < 1) {
     rl.prompt();
    } else {
     const commandInput = response[0]
-    const commandList = getCommands();
+    const commandList = state["commands"];
     try {
         if (commandList[commandInput]) {
-            // This is where I am having trouble
             const runFunction = commandList[commandInput]["callback"];
-            runFunction(commandList);
+            runFunction(state);
     }
         } catch (error) {
             if (error instanceof Error) {
