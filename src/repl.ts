@@ -16,11 +16,11 @@ export function cleanInput(input: string): string[] {
     return cleanText;
 }
 
-export function startREPL(state: State) {
+export async function startREPL(state: State): Promise<void> {
     const rl = state["rl"]
     rl.prompt();
 
-    rl.on("line", (callback) => {
+    rl.on("line", async (callback) => {
    const response = cleanInput(callback);
 
    if (response.length < 1) {
@@ -31,7 +31,8 @@ export function startREPL(state: State) {
     try {
         if (commandList[commandInput]) {
             const runFunction = commandList[commandInput]["callback"];
-            runFunction(state);
+            await runFunction(state);
+            rl.prompt()
     }
         } catch (error) {
             if (error instanceof Error) {
@@ -40,8 +41,6 @@ export function startREPL(state: State) {
                 throw new Error("Unknown command");
             }
         }
-
-    rl.prompt();
    }
 })
 }
