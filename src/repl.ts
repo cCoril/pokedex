@@ -4,15 +4,7 @@ import { CLICommand, type State } from "./state.js"
 
 export function cleanInput(input: string): string[] {
     
-    let cleanText = input.trim().split(" ");
-
-    for (let i = 0; i < cleanText.length; i++) { 
-         if (cleanText[i] === "") {
-            cleanText.splice(i, 1)
-        } else {
-            cleanText[i] = cleanText[i].toLowerCase();
-        }  
-    }
+    let cleanText = input.toLowerCase().trim().split(" ").filter((word) => word !== "");
     return cleanText;
 }
 

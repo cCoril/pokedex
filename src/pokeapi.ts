@@ -5,22 +5,23 @@ export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
 
   constructor() {}
-  cache = new Cache(500);
+  #cache = new Cache(10000);
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
     
     try {
       if (!pageURL) {
         pageURL = `${PokeAPI.baseURL}/location-area/`;
-    }
-    const cacheCheck = this.cache.get<ShallowLocations>(pageURL)
-    if (cacheCheck) {
-      return cacheCheck;
-    }
+      }
+      const cacheCheck = this.#cache.get<ShallowLocations>(pageURL)
+      if (cacheCheck) {
+        return cacheCheck;
+      } else {
         const response = await fetch(pageURL)
         const preCache = await response.json()
-        this.cache.add(pageURL, preCache)
+        this.#cache.add(pageURL, preCache)
         return preCache
+      }
         
     } catch (error) {
       if (error instanceof Error) {
@@ -35,12 +36,14 @@ export class PokeAPI {
   async fetchLocation(locationName: string): Promise<Location> {
     const pageURL = `${PokeAPI.baseURL}/location/${locationName}`;
     try {
-        const cacheCheck = this.cache.get<Location>(pageURL)
+        const cacheCheck = this.#cache.get<Location>(pageURL)
         if (cacheCheck) {
           return cacheCheck;
         } else {
-        const response = await fetch(pageURL);
-        return response.json()
+          const response = await fetch(pageURL);
+          const preCache = await response.json()
+          this.#cache.add(pageURL, preCache)
+          return preCache
         }
     } catch (error) {
       if (error instanceof Error) {

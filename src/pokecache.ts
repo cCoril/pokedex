@@ -19,12 +19,12 @@ export class Cache {
         this.#cache.set(key, newEntry);  
     };
 
-    get<T>(key: string): CacheEntry<T> | undefined {
-        if (!this.#cache.has(key)) {
+    get<T>(key: string): T | undefined {
+        const response = this.#cache.get(key);
+        if (response === undefined) {
             return undefined;
-        };
-        
-        return this.#cache.get(key);
+        }
+        return response.val
     };
 
     #reap(): void {
@@ -36,7 +36,9 @@ export class Cache {
     };
 
     #startReapLoop(): void {
-        this.#reapIntervalId = setInterval(this.#reap, this.#interval)
+        this.#reapIntervalId = setInterval(() => {
+            this.#reap()
+        }, this.#interval);
     };
 
     stopReapLoop() {
