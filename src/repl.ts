@@ -19,19 +19,25 @@ export async function startREPL(state: State): Promise<void> {
     rl.prompt();
    } else {
     const commandInput = response[0]
+    const args = response.slice(1)
     const commandList = state["commands"];
     try {
         if (commandList[commandInput]) {
             const runFunction = commandList[commandInput]["callback"];
-            await runFunction(state);
-            rl.prompt()
+            if (args.length > 1) {
+                await runFunction(state, ...args);
+            } else {
+                await runFunction(state, args[0]);
+            }
     }
         } catch (error) {
             if (error instanceof Error) {
             console.log(`${error.message}`);
+            
             } else {
                 throw new Error("Unknown command");
             }
+            rl.prompt();
         }
    }
 })
