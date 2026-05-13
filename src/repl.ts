@@ -28,16 +28,18 @@ export async function startREPL(state: State): Promise<void> {
                 await runFunction(state, ...args);
             } else {
                 await runFunction(state, args[0]);
+                if (commandInput != "exit") {
+                    rl.prompt();
+                }
             }
     }
         } catch (error) {
             if (error instanceof Error) {
             console.log(`${error.message}`);
-            
             } else {
                 throw new Error("Unknown command");
             }
-            rl.prompt();
+            
         }
    }
 })

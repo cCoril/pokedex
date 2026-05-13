@@ -1,6 +1,7 @@
 import { createInterface, type Interface } from "readline";
 import { getCommands } from "./command_registry.js";
 import { PokeAPI } from "./pokeapi.js";
+import { Pokemon } from 'pokenode-ts'
 
 
 export type CLICommand = {
@@ -15,6 +16,7 @@ commands: Record<string, CLICommand>;
 pokeAPI: PokeAPI;
 nextLocationsURL: string;
 prevLocationsURL: string;
+pokedex: Record<string, Pokemon>;
 };
 
 export function initState(): State {
@@ -27,6 +29,7 @@ export function initState(): State {
     const pokeAPI = new PokeAPI();
     const nextLocationsURL = "https://pokeapi.co/api/v2/location-area/";
     const prevLocationsURL = "";
+    const pokedex = {} 
 
     return {
         rl,
@@ -34,5 +37,6 @@ export function initState(): State {
         pokeAPI,
         nextLocationsURL,
         prevLocationsURL,
+        pokedex,
   };
 }
