@@ -1,5 +1,6 @@
-import { NamedAPIResource, EncounterMethodRate, PokemonEncounter } from 'pokenode-ts';
+import { NamedAPIResource, EncounterMethodRate, PokemonEncounter, Pokemon } from 'pokenode-ts';
 import { Cache } from './pokecache.js';
+
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
@@ -29,9 +30,6 @@ export class PokeAPI {
         throw new Error(`Response status: ${error.message}`);
       } else { throw new Error(`Unknown error occurred.`)}
     }
-    
-
-
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
@@ -55,7 +53,34 @@ export class PokeAPI {
       } else { throw new Error(`Unknown error occurred.`)}
     }
   }
+
+
+  async fetchPokemon(pokemon: string): Promise<Pokemon> {
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemon}`;
+    try {
+      const cacheCheck = this.cache.get<Pokemon>(url);
+      if (cacheCheck) {
+        return cacheCheck;
+      } else {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Error when fetching Pokemon data. Please try again...");
+        }
+        const preCache = await response.json();
+        const cacheFormat = <Pokemon>preCache;
+          this.cache.add(pokemon, cacheFormat);
+          return cacheFormat;
+      } 
+   } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Response status: ${error.message}`);
+      } else { throw new Error(`Unknown error occurred.`)}
+    };
+  }
 }
+
+
+
 
 export type ShallowLocations = {
   count: number;
@@ -72,4 +97,6 @@ export type Location = {
     location: NamedAPIResource;
     names: string[];
     pokemon_encounters: PokemonEncounter[];
-};
+  }
+
+

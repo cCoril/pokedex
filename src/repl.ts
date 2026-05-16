@@ -26,6 +26,7 @@ export async function startREPL(state: State): Promise<void> {
             const runFunction = commandList[commandInput]["callback"];
             if (args.length > 1) {
                 await runFunction(state, ...args);
+                rl.prompt();
             } else {
                 await runFunction(state, args[0]);
                 if (commandInput != "exit") {
@@ -39,7 +40,7 @@ export async function startREPL(state: State): Promise<void> {
             } else {
                 throw new Error("Unknown command");
             }
-            
+            rl.prompt();
         }
    }
 })
