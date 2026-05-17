@@ -10,9 +10,9 @@ export async function commandCatch(state: State, pokemon: string): Promise<void>
         const chance = Math.random() - (baseXP * 0.0025);
         if (chance > 0) {
             const target = state["caughtPokemon"];
-            const source = {pokemon: pokeData};
-            Object.assign(target, source);
+            target[pokemon] = pokeData;
             console.log(`${pokemon} was caught!`);
+            console.log(`Current Pokemon:`)
             console.log("You may now inspect it with the inspect command.")
         } else {
             console.log(`${pokemon} escaped!`);
