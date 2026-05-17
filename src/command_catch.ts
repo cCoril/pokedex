@@ -12,7 +12,6 @@ export async function commandCatch(state: State, pokemon: string): Promise<void>
             const target = state["caughtPokemon"];
             target[pokemon] = pokeData;
             console.log(`${pokemon} was caught!`);
-            console.log(`Current Pokemon:`)
             console.log("You may now inspect it with the inspect command.")
         } else {
             console.log(`${pokemon} escaped!`);

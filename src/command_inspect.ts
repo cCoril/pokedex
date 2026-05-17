@@ -1,13 +1,12 @@
 import { State } from "./state.js";
-
+import { Pokemon } from 'pokenode-ts';
 
 
 
 export async function commandInspect(state: State, pokemon: string): Promise<void> {
-    console.log("attempting to catch", pokemon);
-    const pokeData = state["caughtPokemon"].pokemon;
+    const test = state["caughtPokemon"][pokemon];
+    const pokeData = <Pokemon>test;
     if (!pokeData) {
-        console.log(`pokeData: ${pokeData}`)
         throw new Error("you have not caught that pokemon");
     }
     console.log(`Name: ${pokeData.name}`);
